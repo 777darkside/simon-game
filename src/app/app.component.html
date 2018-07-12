@@ -1,0 +1,21 @@
+<div class="simon">
+
+  <h1>David Galindo</h1>
+
+
+  <div class="container">
+    <div class="game">
+      <div class="button" id="blue" [ngClass]="{'active':colors[0]}"></div>
+      <div class="button" id="red" [ngClass]="{'active':colors[1]}"></div>
+      <div class="button" id="yellow" [ngClass]="{'active':colors[2]}"></div>
+      <div class="button" id="green" [ngClass]="{'active':colors[3]}"></div>
+      <div class="center">
+        <div class="brand">
+          <span class="title">Simon</span>
+          <span class="play" (click)="startGame()"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
