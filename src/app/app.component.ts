@@ -7,46 +7,92 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 })
 export class AppComponent {
 
-
-  iteration = 0;
-  colors = [
+  public colors = [
     {
-      color: 'red',
-      class: 'showRed',
-      show: false
+      id: 'red',
+      show: false,
+      sound: './../assets/audio/low.mp3'
     },
     {
-      color: 'blue',
-      class: 'showBlue',
-      show: false
+      id: 'blue',
+      show: false,
+      sound: './../assets/audio/mid-low.mp3'
     },
     {
-      color: 'Green',
-      class: 'showGreen',
-      show: false
+      id: 'green',
+      show: false,
+      sound: './../assets/audio/mid-high.mp3'
     },
     {
-      color: 'yellow',
-      class: 'showYellow',
-      show: false
-    }
+      id: 'yellow',
+      show: false,
+      sound: './../assets/audio/high.mp3'
+    },
   ];
-  secuence = [];
+  public quote = 'Press the green button to start';
+  private gameIteration: number;
+  private error = new Audio('./../assets/audio/err.mp3');
+  private secuence: number[];
+  private playerSecuence: any[];;
 
-  startGame() {
+  public startGame() {
+    this.secuence = [];
     this.createSecuence();
   }
 
   createSecuence() {
-    this.iteration = ++this.iteration;
-    this.secuence.push(this.colors[(Math.floor(Math.random() * 4))]);
-    console.log(this.secuence);
-    this.showSecuence();
+    this.quote = "Listen to the secuence";
+    this.secuence.push(Math.floor(Math.random() * 4));
+    this.gameIteration = 0;
+    this.startShowing();
   }
 
-  showSecuence() {
-    for (const e of this.secuence) {
-      // do something
+  startShowing() {
+
+    if (this.gameIteration >= this.secuence.length) {
+      this.playerTurn();
+      return;
     }
+
+    const actualColor = this.colors[this.secuence[this.gameIteration]];
+    actualColor.show = true;
+    this.playSound(actualColor.sound);
+
+    setTimeout(() => {
+      actualColor.show = false;
+      this.gameIteration = ++this.gameIteration;
+      this.startShowing();
+    }, 800);
+  }
+
+  playerTurn() {
+    this.playerSecuence = [];
+    this.gameIteration = 0;
+    this.quote = "Your turn";
+  }
+
+  addToSecuence(color: any) {
+    this.playerSecuence.push(color);
+
+    if (this.colors[this.secuence[this.gameIteration]].id 
+          === this.playerSecuence[this.gameIteration].id) {
+      this.playSound(color.sound);
+      this.gameIteration = ++this.gameIteration;
+      
+      if (this.gameIteration >= this.secuence.length) {
+        setTimeout(() => {
+          this.createSecuence();
+        }, 1500);
+      }
+
+    } else {
+      this.quote = `You lost! You made ${(this.secuence.length - 1) * 100} points, press the button to start again`;
+      this.error.play();
+    }
+  }
+
+  playSound(src) {
+    const sound = new Audio(src);
+    sound.play()
   }
 }
